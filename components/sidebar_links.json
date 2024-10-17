@@ -1,0 +1,42 @@
+[
+    {
+        "name":"Home",
+        "icon":"../images/Home.svg",
+        "link":"/"
+    },
+    {
+        "name":"Events",
+        "icon":"../images/Calender.svg",
+        "link":"/events"
+    },
+    {
+        "name":"Speakers",
+        "icon":"../images/Speaker.svg",
+        "link":"/speakers"
+    },
+    {
+        "name":"Notifications",
+        "icon":"../images/Notification.svg",
+        "link":"/notification"
+    },
+    {
+        "name":"Messages",
+        "icon":"../images/Messages.svg",
+        "link":"/notification"
+    },
+    {
+        "name":"Settings",
+        "icon":"../images/Settings.svg",
+        "link":"/notification"
+    },
+    {
+        "name":"Collapse",
+        "icon":"../images/Collapse.svg",
+        "link":"/notification"
+    },
+    {
+        "name":"Dark mode",
+        "icon":"../images/LeftSwitch.svg",
+        "link":"/notification"
+    }
+]
