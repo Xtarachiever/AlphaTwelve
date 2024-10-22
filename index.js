@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Append to the nav_container
           nav_container.appendChild(nav_links);
+        
         });
 
         const sidebarLinks = document.querySelectorAll(".sidebar_links");
@@ -148,7 +149,10 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((data) => {
       const container = document.getElementById("table");
-      const tableDiv = document.createElement("table");
+      const desktopTableDiv = document.createElement("table");
+      const mobileTableDiv = document.createElement("table");
+      mobileTableDiv.classList.add('table_mobile_view');
+      desktopTableDiv.classList.add('table_desktop_view');
       let itemsPerPage = 10;
       let currentPage = 1;
 
@@ -173,7 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
           (currentPage - 1) * itemsPerPage,
           currentPage * itemsPerPage
         );
-        tableDiv.innerHTML = `
+
+        // desktopTableDiv Content
+        desktopTableDiv.innerHTML = `
         <tr>
             <th>Event Name</th>
             <th>Date</th>
@@ -181,15 +187,23 @@ document.addEventListener("DOMContentLoaded", function () {
             <th>Status</th>
         </tr>`;
 
+        // Mobile Table Details
+        mobileTableDiv.innerHTML = `
+        <tr>
+            <th>Event Name</th>
+            <th>Status</th>
+        </tr>`;
+        
+
         // Append rows for each user info
-        visibleData.forEach((userInfo) => {
+        visibleData.forEach((userInfo,index) => {
           const formattedDate = userInfo?.date.split("T")[0]; // Ensure date exists
           const row = document.createElement("tr");
           row.innerHTML = `
                 <td class="event">${userInfo?.event}</td>
                 <td>${formattedDate}</td>
                 <td>${userInfo?.name}</td>
-                <td>${userInfo?.status}</td>
+                <td class="status">${userInfo?.status}</td>
                 `;
 
           // Create the event-div to be appended
@@ -234,7 +248,81 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           });
 
-          tableDiv.appendChild(row); // Append row to the table
+          desktopTableDiv.appendChild(row); // Append row to the table
+
+          // Mobile Table Details
+          const mobileTableRow = document.createElement("tr");
+
+          // <td>${formattedDate}</td>
+          // <td>${userInfo?.name}</td>
+          // Add the HTML structure for the SVGs inside the row
+        mobileTableRow.innerHTML = `
+          <td class="drop_down"> 
+            <svg class="svg-default" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:10px; margin-right:10px;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+            <svg class="svg-toggled" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:10px; margin-right:10px; display:none;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>            
+            ${userInfo?.event}
+          </td>
+          <td class="status">${userInfo?.status}</td>
+        `;
+
+        const dropDownRow = document.createElement('tr');
+        const dropDownTd = document.createElement('td');
+        dropDownTd.colSpan = 2;
+
+        const dropDownContent = (index % 2 === 0)
+          ? `<p style="border:1px dotted #3B82F6; text-align:center; padding:5px; color:#3B82F6">Replace</p>`
+          : `<div style="display:flex; justify-content:space-between; padding:2px 8px;"><span>${userInfo?.name}</span> <span>${formattedDate}</span></div>`;
+
+        dropDownTd.innerHTML = `
+          <div class="drop_down_content">
+            ${dropDownContent}
+          </div>
+        `;
+    
+        dropDownRow.style.display = 'none'; // Initially hide the dropdown row
+        dropDownRow.appendChild(dropDownTd);
+    
+        mobileTableDiv.appendChild(mobileTableRow);
+        mobileTableDiv.appendChild(dropDownRow);
+
+
+        // Now, add event listener for dropdown toggle
+        const detailsDropdowns = document.querySelectorAll('tr:has(.drop_down_content)');
+
+        detailsDropdowns.forEach(details => {
+          details.style.display = 'none';
+        });
+
+        mobileTableRow.addEventListener('click', () => {
+          const defaultSvg = mobileTableRow.querySelector('.svg-default');
+          const toggledSvg = mobileTableRow.querySelector('.svg-toggled');
+    
+          if (dropDownRow.style.display === 'none') {
+            dropDownRow.style.display = 'table-row'; // Show details
+            defaultSvg.style.display = 'none';
+            toggledSvg.style.display = 'inline';
+          } else {
+            dropDownRow.style.display = 'none'; // Hide details
+            defaultSvg.style.display = 'inline';
+            toggledSvg.style.display = 'none';
+          }
+        });
+
+          //Styling status button
+          const statusDiv = document.querySelectorAll(".status");
+          statusDiv.forEach((eachStatus) => {
+            if (eachStatus?.innerText === "Completed") {
+              eachStatus.style.backgroundColor = "#D1FAE5";
+              eachStatus.style.color = "#10B981";
+            } else {
+              eachStatus.style.backgroundColor = "#DBEAFE";
+              eachStatus.style.color = "#3B82F6";
+            }
+          });
         });
         sortData(filterBySearch);
       }
@@ -338,7 +426,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Append the table to the container
-      container.appendChild(tableDiv);
+      container.appendChild(desktopTableDiv);
+      container.appendChild(mobileTableDiv);
       container.appendChild(paginationContainer);
 
       //   Sorting Functionality

@@ -217,6 +217,9 @@
 .layout .main_body .table_div .table tr {
     position: relative;
 }
+.layout .main_body .table_div .table .table_mobile_view{
+    display: none;
+}
 .layout .main_body .table_div .table .event-div{
     background-color: white;
     max-width: 500px;
@@ -338,6 +341,17 @@
 .bar_collapse .nav_container .nav_links{
     justify-content: center;
 }
+
+/* Status */
+.layout .main_body .table_div .table tr td.status{
+    text-align: center;
+    border-radius: 20px;
+    padding: 2px 8px;
+    background-color: white;
+    display: inline-block;
+    margin-top: 5px;
+    margin-left: 5px;
+}
 @media screen and (max-width:1350px) {
     /* .layout .main_body .box_container{
         grid-template-columns: auto auto auto;
@@ -413,5 +427,41 @@
     }
     body ~ .layout .mobile_navbar{
         overflow: hidden;
+    }
+}
+
+
+@media screen and (max-width:450px) {
+    .layout .main_body{
+        margin-left: 0px;
+    }
+    .layout .main_body .filtering_container .filter_left,
+    .layout .main_body .filtering_container .filter_right{
+        display: block;
+        width: 100%;
+        padding: 10px 0px;
+    }
+    .layout .main_body .filtering_container .filter_left .display_text{
+        font-weight: 500;
+    }
+    .layout .main_body .filtering_container .filter_right div{
+        justify-content: space-between;
+    }
+    .layout .main_body .filtering_container .filter_left .input_field,
+    .layout .main_body .filtering_container .filter_right .input_field{
+        padding: 5px 0px;
+    }
+    .layout .main_body .filtering_container .filter_left .input_field input,
+    .layout .main_body .filtering_container .filter_left .input_field select{
+        width: 100%;
+    }
+    .layout .main_body .table_div .table{
+        min-width: 360px;
+    }
+    .layout .main_body .table_div .table .table_desktop_view{
+        display: none;
+    }
+    .layout .main_body .table_div .table .table_mobile_view{
+        display: block;
     }
 }
