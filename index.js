@@ -115,19 +115,21 @@ document.addEventListener("DOMContentLoaded", function () {
               
               link?.classList.add("active_link");
               imgTag.style.filter = 'invert(26%) sepia(73%) saturate(5823%) hue-rotate(229deg) brightness(94%) contrast(99%)';
-            }
-            
-            if (imgTag?.classList.contains("svg_dark")) {
-              // Toggle dark mode
+            }else{
               if (layoutDiv.classList.contains('dark')) {
                 layoutDiv.classList.remove('dark');
                 imgTag.src = '../images/LeftSwitch.svg'; // Default icon when not in dark mode
               } else {
                 layoutDiv.classList.add('dark');
                 imgTag.src = './images/Base_Switch.svg'; // Dark mode icon
+                const paginationArrows = document.querySelectorAll('.pagination_container span');
+                paginationArrows.forEach((paginationArrow)=>{
+                  const paginationSvg = paginationArrow.querySelector('svg');
+                  paginationSvg.style.color = '#8576FF';
+                })
               }
             }
-  
+            
             if (!mediaQuery.matches) {
               if (link.querySelector("img").classList.contains("svg_collapse")) {
                   toggleSidebarCollapse();
@@ -314,8 +316,6 @@ document.addEventListener("DOMContentLoaded", function () {
           // Mobile Table Details
           const mobileTableRow = document.createElement("tr");
 
-          // <td>${formattedDate}</td>
-          // <td>${userInfo?.name}</td>
           // Add the HTML structure for the SVGs inside the row
         mobileTableRow.innerHTML = `
           <td class="drop_down"> 
@@ -374,18 +374,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
           //Styling status button
+
           const statusDiv = document.querySelectorAll(".status");
+
           statusDiv.forEach((eachStatus) => {
+            // Check if the span already exists
+            let statusDot = eachStatus.querySelector("span");
+            
+            // If the span doesn't exist, create and append it
+            if (!statusDot) {
+              statusDot = document.createElement("span");
+              eachStatus.insertBefore(statusDot, eachStatus.firstChild);
+            }
+          
+            // Add the necessary class or style to the span
             if (eachStatus?.innerText === "Completed") {
               eachStatus.style.backgroundColor = "#D1FAE5";
               eachStatus.style.border = "1px solid #10B981";
               eachStatus.style.color = "#10B981";
+          
+              statusDot.classList.add('completed_statusDot');
             } else {
               eachStatus.style.backgroundColor = "#DBEAFE";
               eachStatus.style.border = "1px solid #3B82F6";
               eachStatus.style.color = "#3B82F6";
+          
+              statusDot.classList.add('incomplete_statusDot');
             }
           });
+          
+          
         });
         sortData(filterBySearch);
       }
@@ -402,10 +420,10 @@ document.addEventListener("DOMContentLoaded", function () {
         paginationList.innerHTML = "";
         const prevDiv = document.createElement("span");
         const nextDiv = document.createElement("span");
-        prevDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6" style="width:10px;">
+        prevDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4" stroke="currentColor" class="size-6" style="width:10px;">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
         </svg>`;
-        nextDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6" style="width:10px;">
+        nextDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4" stroke="currentColor" class="size-6" style="width:10px;">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
         `;
@@ -479,6 +497,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         paginationContainer.appendChild(paginationList);
         paginationContainer.appendChild(selectByRows);
+
       }
 
       function highlightCurrentPage() {
