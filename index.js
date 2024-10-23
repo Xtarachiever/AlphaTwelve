@@ -8,10 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((data) => {
       const nav_container = document.createElement("div");
-      nav_container.innerHTML = "";
+      // nav_container.innerHTML = "";
       nav_container.className = "nav_container";
 
       const profileContainer = document.querySelector(".profile");
+
       function renderSideBar() {
         nav_container.innerHTML = "";
         data.forEach((item) => {
@@ -25,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Create text node with item name
           nav_links.appendChild(img);
-          //  nav_links.appendChild(document.createTextNode(item.name));
           const profileDiv = profileContainer.querySelector("div"); // Ensure this selects the correct div
 
           // Check if the div exists
@@ -68,8 +68,24 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         }
 
+        // sidebar functionalities
         applyNavLinkEventListener();
         renderChart();
+        handleResize();
+      }
+
+      // renderSideBar();
+
+      // Function used to collapse navbar if collapse is clicked
+      function toggleSidebarCollapse() {
+        if (sidebarContainer.classList.contains("bar_collapse")) {
+          sidebarContainer.classList.remove("bar_collapse");
+          layoutMainDiv.style.marginLeft = "250px";
+        } else {
+          sidebarContainer.classList.add("bar_collapse");
+          layoutMainDiv.style.marginLeft = "100px";
+        }
+        renderSideBar();
       }
 
 
@@ -77,36 +93,51 @@ document.addEventListener("DOMContentLoaded", function () {
         const sideBarNavLinks = document.querySelectorAll(
           ".nav_container .nav_links"
         );
+        sideBarNavLinks?.forEach((link)=>{
+          if(link?.innerText === 'Home'){
+            link?.classList.add("active_link");
+          }
+        })
         sideBarNavLinks.forEach((link) => {
           link.addEventListener("click", () => {
-            if(link.querySelector("img").classList.contains("svg_dark")){
-              if(layoutDiv.classList.contains('dark')){
-                layoutDiv.classList.remove('dark')
-              }else{
-                layoutDiv.classList.add('dark');
-              }
-            }
-            if (!mediaQuery.matches) {
-              if (
-                link.querySelector("img").classList.contains("svg_collapse")
-              ) {
-                if (sidebarContainer.classList.contains("bar_collapse")) {
-                  sidebarContainer.classList.remove("bar_collapse");
-                  layoutMainDiv.style.marginLeft = "250px";
-                  computedLayoutMargin += "250px";
-                } else {
-                  sidebarContainer.classList.add("bar_collapse");
-                  layoutMainDiv.style.marginLeft = "100px";
-                  computedLayoutMargin = "100px";
+            const imgTag = link.querySelector("img");
+            // Adding text-color to the active sidebar
+            if(!imgTag?.classList.contains("svg_dark")){
+              sideBarNavLinks.forEach((otherLink) => {
+                otherLink.classList.remove("active_link");
+                
+                // Reset the filter style on the img tag
+                const imgTag = otherLink.querySelector("img");
+                if (imgTag) {
+                  imgTag.style.filter = "";  // Reset filter to default
                 }
+              });
+              
+              link?.classList.add("active_link");
+              imgTag.style.filter = 'invert(26%) sepia(73%) saturate(5823%) hue-rotate(229deg) brightness(94%) contrast(99%)';
+            }
+            
+            if (imgTag?.classList.contains("svg_dark")) {
+              // Toggle dark mode
+              if (layoutDiv.classList.contains('dark')) {
+                layoutDiv.classList.remove('dark');
+                imgTag.src = '../images/LeftSwitch.svg'; // Default icon when not in dark mode
+              } else {
+                layoutDiv.classList.add('dark');
+                imgTag.src = './images/Base_Switch.svg'; // Dark mode icon
               }
             }
-            renderSideBar();
+  
+            if (!mediaQuery.matches) {
+              if (link.querySelector("img").classList.contains("svg_collapse")) {
+                  toggleSidebarCollapse();
+              }
+            }
           });
         });
       }
 
-      applyNavLinkEventListener();
+      // applyNavLinkEventListener();
       renderSideBar();
     });
 
@@ -347,9 +378,11 @@ document.addEventListener("DOMContentLoaded", function () {
           statusDiv.forEach((eachStatus) => {
             if (eachStatus?.innerText === "Completed") {
               eachStatus.style.backgroundColor = "#D1FAE5";
+              eachStatus.style.border = "1px solid #10B981";
               eachStatus.style.color = "#10B981";
             } else {
               eachStatus.style.backgroundColor = "#DBEAFE";
+              eachStatus.style.border = "1px solid #3B82F6";
               eachStatus.style.color = "#3B82F6";
             }
           });
