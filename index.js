@@ -1,6 +1,7 @@
 // Fetching the sidebar links from the JSON file
 document.addEventListener("DOMContentLoaded", function () {
-  const layoutDiv = document.querySelector(".layout .main_body");
+  const layoutDiv = document.querySelector('.layout');
+  const layoutMainDiv = document.querySelector(".layout .main_body");
   const mediaQuery = window.matchMedia("(max-width: 700px)");
   const sidebarContainer = document.querySelector("#sidebar");
   fetch("./components/sidebar_links.json")
@@ -68,7 +69,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         applyNavLinkEventListener();
+        renderChart();
       }
+
 
       function applyNavLinkEventListener() {
         const sideBarNavLinks = document.querySelectorAll(
@@ -76,19 +79,24 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         sideBarNavLinks.forEach((link) => {
           link.addEventListener("click", () => {
+            if(link.querySelector("img").classList.contains("svg_dark")){
+              if(layoutDiv.classList.contains('dark')){
+                layoutDiv.classList.remove('dark')
+              }else{
+                layoutDiv.classList.add('dark');
+              }
+            }
             if (!mediaQuery.matches) {
               if (
                 link.querySelector("img").classList.contains("svg_collapse")
               ) {
                 if (sidebarContainer.classList.contains("bar_collapse")) {
                   sidebarContainer.classList.remove("bar_collapse");
-                  layoutDiv.style.marginLeft = "250px";
+                  layoutMainDiv.style.marginLeft = "250px";
                   computedLayoutMargin += "250px";
-                  // layoutDiv.classList.add("mainbody_margin");
                 } else {
                   sidebarContainer.classList.add("bar_collapse");
-                  // layoutDiv.classList.remove("mainbody_margin");
-                  layoutDiv.style.marginLeft = "100px";
+                  layoutMainDiv.style.marginLeft = "100px";
                   computedLayoutMargin = "100px";
                 }
               }
@@ -102,41 +110,63 @@ document.addEventListener("DOMContentLoaded", function () {
       renderSideBar();
     });
 
-  var xValues = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  var yValues = [700, 950, 780, 400, 1000, 560, 900, 380, 850, 700, 1000, 600];
-  var barColors = ["red", "green", "blue", "orange", "brown"];
-
-  new Chart("myChart", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [
-        {
-          backgroundColor: "#8576FF",
-          data: yValues,
+    function renderChart(){
+      var xValues = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      var yValues = [700, 950, 780, 400, 1000, 560, 900, 380, 850, 700, 1000, 600];
+    
+      new Chart("myChart", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [
+            {
+              backgroundColor:  "#8576FF",
+              color: layoutDiv.classList.contains('dark') ? "white" :"#000000",
+              data: yValues,
+            },
+          ],
         },
-      ],
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: false,
-      },
-    },
-  });
+        options: {
+          legend: { display: false },
+          title: {
+            display: false,
+          },
+          scales: {
+            y: {
+              ticks: {
+                color: layoutDiv.classList.contains('dark') ? "#ffffff" : "#000000", // Axis label color for Y
+              },
+              grid: {
+                color: layoutDiv.classList.contains('dark') ? "#333333" : "#cccccc" // Grid color for Y axis
+              }
+            },
+            x: {
+              ticks: {
+                color: layoutDiv.classList.contains('dark') ? "#ffffff" : "#000000", // Axis label color for X
+              },
+              grid: {
+                color: layoutDiv.classList.contains('dark') ? "#333333" : "#cccccc" // Grid color for X axis
+              }
+            }
+          }
+        },
+      });
+    }
+
+    renderChart();
 
   // All details about pagination and table
   // Fetching JSON MockUp data
@@ -514,10 +544,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleResize() {
     if (mediaQuery.matches) {
       // Mobile screen adjustments
-      layoutDiv.style.marginLeft = "20px";
+      layoutMainDiv.style.marginLeft = "20px";
     } else {
       // Desktop screen adjustments
-      layoutDiv.style.marginLeft = sidebarContainer.classList.contains(
+      layoutMainDiv.style.marginLeft = sidebarContainer.classList.contains(
         "bar_collapse"
       )
         ? "100px"
@@ -540,4 +570,5 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initial check on page load
   handleResize();
   toggleNavBar();
+
 });
